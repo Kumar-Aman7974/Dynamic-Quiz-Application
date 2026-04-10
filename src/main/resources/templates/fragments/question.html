@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<div th:fragment="questionFragment" class="quiz-card">
+    <form id="quizForm">
+
+        <div class="question-meta">
+            <th:block th:with="idx=${currentIndex != null ? currentIndex + 1 : 1}">
+                <span th:text="${idx < 10 ? '0' + idx : idx}">01</span>
+            </th:block>
+
+            <span th:text="${totalQuestions != null ? '/0' + totalQuestions : '/04'}">/04</span>
+        </div>
+
+        <div class="question-text" th:text="${currentQuestion.question}">
+            Which function is used to serialize an object into a JSON string in Javascript?
+        </div>
+
+        <div class="options-list">
+            <div class="option-item" th:each="opt, iter : ${currentQuestion.options}">
+                <input type="radio"
+                       name="answer"
+                       th:id="${'opt-' + iter.index}"
+                       th:value="${opt}"
+                       required>
+
+                <label class="option-label" th:for="${'opt-' + iter.index}" th:text="${opt}">
+                    Option Text
+                </label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-next">Next</button>
+    </form>
+</div>
+
+</body>
+</html>

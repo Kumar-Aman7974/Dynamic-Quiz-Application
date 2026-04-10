@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <title>Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #8e2de2, #4a00e0);
+            --bg-gradient: linear-gradient(to right, #9d318e, #c77ab4);
+            --light-bg: #ffffff;
+            --text-main: #2d3436;
+            --border-color: #f1f2f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        #questionContainer {
+            width: 100%;
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        /* The Card Design */
+        .quiz-card {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 60px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .question-meta {
+            font-size: 2rem;
+            font-weight: 600;
+            color: #8e2de2;
+            margin-bottom: 10px;
+        }
+
+        .question-meta span {
+            color: #dfe6e9;
+            font-size: 1rem;
+        }
+
+        .question-text {
+            font-size: 1.25rem;
+            color: #2d3436;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            font-weight: 600;
+        }
+
+        /* Option Styling */
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .option-item {
+            position: relative;
+        }
+
+        .option-item input[type="radio"] {
+            display: none;
+        }
+
+        .option-label {
+            display: block;
+            padding: 18px 25px;
+            border: 2px solid var(--border-color);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #636e72;
+            font-size: 1rem;
+        }
+
+        /* Hover & Checked States */
+        .option-label:hover {
+            border-color: #d1d8e0;
+            background-color: #f8f9fa;
+        }
+
+        .option-item input[type="radio"]:checked + .option-label {
+            border-color: #e0a3ff;
+            background-color: #fdf2ff;
+            color: #8e2de2;
+        }
+
+        /* Next Button */
+        .btn-next {
+            display: block;
+            margin-left: auto;
+            margin-top: 40px;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 12px 60px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+
+        .btn-next:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div id="questionContainer">
+    <div th:replace="fragments/question :: questionFragment"></div>
+</div>
+
+<script>
+    document.addEventListener("submit", function(e) {
+
+        if (e.target.id === "quizForm") {
+
+            e.preventDefault();
+
+            let selected = document.querySelector('input[name="answer"]:checked');
+
+            if (!selected) {
+                alert("Please select an option");
+                return;
+            }
+
+            fetch("/api/next", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "answer=" + selected.value
+            })
+            .then(res => res.text())
+            .then(data => {
+                document.getElementById("questionContainer").innerHTML = data;
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

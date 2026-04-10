@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Quiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-gradient: linear-gradient(135deg, #8e2de2, #4a00e0);
+            --bg-gradient: linear-gradient(to right, #9d318e, #c77ab4);
+            --light-bg: #ffffff;
+            --text-main: #2d3436;
+            --border-color: #f1f2f6;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-gradient);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+        }
+
+        .quiz-card {
+            background: var(--light-bg);
+            border-radius: 12px;
+            padding: 50px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        h2 {
+            color: #8e2de2;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            font-family: inherit;
+            font-size: 1rem;
+            resize: none;
+            box-sizing: border-box;
+            outline: none;
+            transition: border-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            border-color: #e0a3ff;
+        }
+
+        .btn-generate {
+            display: inline-block;
+            background: var(--primary-gradient);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px; /* Matching the pill shape */
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.3s;
+            width: 100%;
+        }
+
+        .btn-generate:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .placeholder-hint {
+            color: #b2bec3;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="quiz-card">
+        <h2>Quiz Generator</h2>
+
+        <form action="/api/generate" method="post">
+            <textarea name="prompt" rows="5" 
+                      placeholder="Enter topic like Java, DBMS, OS..." 
+                      required></textarea>
+            
+            <button type="submit" class="btn-generate">Generate Quiz</button>
+            
+            <div class="placeholder-hint">
+                Type a subject to start your learning journey.
+            </div>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

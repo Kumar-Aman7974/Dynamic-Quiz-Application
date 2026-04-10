@@ -1,0 +1,11 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="resultBody">
+    <h2>Quiz Complete!</h2>
+    <p>Your Score: <span th:text="${score}"></span> / <span th:text="${total}"></span></p>
+    <br>
+    <a href="/api/">Try Another Topic</a>
+</div>
+</body>
+</html>
