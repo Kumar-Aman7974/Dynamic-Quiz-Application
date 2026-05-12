@@ -8,6 +8,8 @@ public class QuestionResponse {
 	private List<Question> questions;
 
 
+	// here we are creating the getter and setter method for the questions list;
+
 	public List<Question> getQuestions() {
 		return questions;
 	}

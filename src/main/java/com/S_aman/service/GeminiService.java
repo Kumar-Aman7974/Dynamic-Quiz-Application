@@ -2,19 +2,33 @@ package com.S_aman.service;
 
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.S_aman.model.QuestionResponse;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.apache.pdfbox.Loader;
+import org.apache.pdfbox.io.RandomAccessReadBuffer;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 @Service
 public class GeminiService {
 
+
+
 	private final ChatClient chatClient;
+	// here we are using the ObjectMapper class from the jackson library to convert the JSON response from the AI into our
+	// QuestionResponse java object. We configure it to ignore any extra fields in the JSON that we don't
+	// have in our QuestionResponse class, which makes our code more robust to changes in the AI's output format.
 	private final ObjectMapper objectMapper;
 
+
 	public GeminiService(ChatClient.Builder builder) {
-		this.chatClient = builder.build();
+		this.chatClient = builder.build();// this means that we are using the builder pattern to create an instance
+		// of the ChatClient. The builder will be configured by Spring to include the necessary authentication and
+		// endpoint information for the Gemini API.
+
 		// Configure Jackson to be "forgiving" of extra fields
 		this.objectMapper = new ObjectMapper()
 				.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -45,7 +59,9 @@ public class GeminiService {
 					.content();
 
 			// STEP 1: Clean the response (Crucial for AI stability)
-			if (aiResponse == null) return new QuestionResponse();
+			if (aiResponse == null) return new QuestionResponse(); // here that means if the aiResponse is null
+			// we return an empty QuestionResponse object to avoid null pointer exceptions later in the code.
+
 
 			// Remove Markdown blocks if the AI ignored the 'no-markdown' rule
 			String cleanJson = aiResponse
@@ -63,5 +79,25 @@ public class GeminiService {
 			fallback.setQuestions(new java.util.ArrayList<>());
 			return fallback;
 		}
+	}
+
+	public String extractTextFromPdf(MultipartFile file) {
+		try (PDDocument document = Loader.loadPDF(new RandomAccessReadBuffer(file.getInputStream()))) {
+			PDFTextStripper stripper = new PDFTextStripper();
+			return stripper.getText(document);
+		} catch (Exception e) {
+			System.err.println("Error extracting text from PDF: " + e.getMessage());
+			return "";
+		}
+	}
+
+	public QuestionResponse generateContentFromPdf(MultipartFile file) {
+		String extractedText = extractTextFromPdf(file);
+		if (extractedText.isEmpty()) {
+			QuestionResponse fallback = new QuestionResponse();
+			fallback.setQuestions(new java.util.ArrayList<>());
+			return fallback;
+		}
+		return generateContent(extractedText);
 	}
 }
