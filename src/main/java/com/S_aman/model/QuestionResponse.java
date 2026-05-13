@@ -4,7 +4,8 @@ import java.util.List;
 
 
 public class QuestionResponse {
-	
+
+	private String quizId;  // unique ID for each quiz
 	private List<Question> questions;
 
 
